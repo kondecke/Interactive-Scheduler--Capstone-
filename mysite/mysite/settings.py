@@ -26,7 +26,7 @@ SECRET_KEY = config.DJANGO_SECRET
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kbmiller99.pythonanywhere.com', 'localhost']
 
 
 # Application definition
