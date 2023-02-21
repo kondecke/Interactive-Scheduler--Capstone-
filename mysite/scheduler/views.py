@@ -28,4 +28,4 @@ def notifications(request):
     return render(request, 'notifications.html')
 
 def messages(request): 
-    pass
+    return render(request, 'messages.html')
