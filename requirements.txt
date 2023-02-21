@@ -1,0 +1,4 @@
+django
+djangorestframework
+sshtunnel
+mysql-connector-python
