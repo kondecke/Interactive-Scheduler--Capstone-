@@ -1,16 +1,15 @@
 import mysql.connector
-import os
 import sshtunnel
-
+from . import config
 class dbConnection():
     def __init__(self): 
-        self.sshHost = os.getenv("SSH_HOST")
-        self.sshUser = os.getenv("SSH_USER")
-        self.sshPwd = os.getenv("SSH_PWD")
-        self.dbUser = os.getenv("DB_USER")
-        self.dbPwd = os.getenv("DB_PWD")
-        self.dbHost = os.getenv("DB_HOST_NAME")
-        self.dbName = os.getenv("DB_NAME")
+        self.sshHost = config.SSH_HOST
+        self.sshUser = config.SSH_USER
+        self.sshPwd = config.SSH_PWD
+        self.dbUser = config.DB_USER
+        self.dbPwd = config.DB_PWD
+        self.dbHost = config.DB_HOST_NAME
+        self.dbName = config.DB_NAME
 
     def connect(self):
         sshtunnel.SSH_TIMEOUT = 5.0
