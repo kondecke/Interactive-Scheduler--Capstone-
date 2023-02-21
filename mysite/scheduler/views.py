@@ -29,3 +29,6 @@ def notifications(request):
 
 def messages(request): 
     return render(request, 'messages.html')
+
+def faq(request): 
+    return render(request, 'faq.html')

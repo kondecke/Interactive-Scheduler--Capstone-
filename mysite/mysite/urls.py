@@ -27,5 +27,6 @@ urlpatterns = [
     path('messages/', views.messages), 
     path('calendar/', views.calendar), 
     path('groups/', views.groups), 
-    path('settings/', views.settings)
+    path('settings/', views.settings),
+    path('faq/', views.faq)
 ]
