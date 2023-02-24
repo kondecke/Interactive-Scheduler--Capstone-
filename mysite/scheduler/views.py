@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from src import dbConnection
+from . import forms
 
 # Create your views
 
@@ -16,7 +17,13 @@ def calendar(request):
     return render(request, 'calendar.html')
 
 def login(request): 
-    return render(request, 'login.html')
+    if request.method == "GET": 
+        context = {'form': forms.LoginForm}
+        return render(request, 'login.html', context)
+    if request.method == "POST": 
+        # validate login and redirect to new page 
+        context = {'form':forms.LoginForm}
+        return render(request, 'login.html', context)
 
 def settings(request): 
     return render(request, 'settings.html')

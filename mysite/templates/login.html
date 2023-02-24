@@ -4,6 +4,11 @@
         <title>Login</title>
     </head>
     <body>
+        <form method="Post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit">
+        </form>
         Under Construction
     </body>
 </html>
