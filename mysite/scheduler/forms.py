@@ -27,10 +27,10 @@ class CreateForumnPost(forms.Form):
     title = forms.CharField(label="Post Title")
     postContent = forms.CharField(label="Post Content")
 
-class createGroup(forms.form):
+class createGroup(forms.Form):
     groupName = forms.CharField(label="Group Name", required=True)
     groupDescription = forms.CharField(label="Description of Group", required=True)
     contactInfo = forms.EmailField(label="Email for Contact", required=True)
-    meetingTimes = forms.DateTimeField("Meeting Time/Date")
+    meetingTimes = forms.DateTimeField(label="Meeting Time/Date")
 
 
