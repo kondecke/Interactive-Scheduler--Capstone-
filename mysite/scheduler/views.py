@@ -39,3 +39,11 @@ def messages(request):
 
 def faq(request): 
     return render(request, 'faq.html')
+
+def createGroup(request):
+    if request.method == "GET":
+        context = {'form': forms.createGroup}
+        return render(request, 'createGroup.html', context)
+    if request.method == "POST":
+        context = {'form':forms.createGroup}
+        return render(request, 'createGroup.html', context)
