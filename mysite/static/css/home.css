@@ -3,7 +3,7 @@
   width: 10%;
   position: fixed;
   z-index: 1;
-  top: 10%;
+  top: 11%;
   left: 0;
   background-color:  #000080;
   overflow-x: hidden;
@@ -34,6 +34,7 @@
     top: 20%;
 }
 h1{
+    position: relative;
     font-size: 3vw;
     top: -7%;
     color:black;
