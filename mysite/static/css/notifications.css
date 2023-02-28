@@ -1,0 +1,30 @@
+.sideBar{
+    height: 100%;
+  width: 10%;
+  position: fixed;
+  z-index: 1;
+  top: 10%;
+  left: 0;
+  background-color:  #000080;
+  overflow-x: hidden;
+  padding-top: 1.5%;
+  border: solid black;
+  border-left: none;
+  border-top: solid black (0,0%,0%,1);
+}
+.sideBar a{
+    padding: 10% 10% 10% 20%;
+    text-decoration: none;
+    font-size: 1.25vw;
+    color: #ffd633;
+    display: block;
+}
+.sideBar a:hover{
+    transition: 0.5s;
+    background-color:#d9d9d9;
+    color: black;
+}
+.main{
+    margin-left: 10%;
+    
+}

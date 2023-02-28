@@ -1,25 +1,45 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
         <title>Flash Friends - Home</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+        <meta name="viewport" content="width=device-width, inital-scale=1.0">
     </head>
+    <div id="sideBar" class="sideBar">
+        <nav>
+            
+                <a href="/groups">Groups</a>
+                <a href="/messages">Messages</a>
+                <a href="/notifications">Notifications</a>
+                <a href="/calendar">Calendar</a>
+                <a href="/faq">FAQs</a>
+                <a href="/settings">Settings</a>
+                <a href="/createAccount">Create Account</a>
+                <a href="/login">Login</a>
+                <a href="/index">Index</a>
+            
+        </nav>
+    </div>
+    <div id="main" class="main">
     <body>
         <header>
-            <h1>Under Construction</h1>
-            <nav>
-                <ul>
-                    <li><a href="/groups">Groups</a></li>
-                    <li><a href="/messages">Messages</a></li>
-                    <li><a href="/notifications">Notifications</a></li>
-                    <li><a href="/calendar">Calendar</a></li>
-                    <li><a href="/faq">FAQs</a></li>
-                    <li><a href="/settings">Settings</a></li>
-                    <li><a href="/createAccount">Create Account</a></li>
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/index">Index</a></li>
-                </ul>
-            </nav>
+            <h1>Home</h1>
+       
         </header>
-        
+        <div class="notHeader">
+            <h2>Today's Events:</h2>
+                <p>Put some stuff here.</p>
+                <p></p>
+                <p></p>
+            <h3>Upcoming Events:</h3>
+                <p>Put some more stuff here.</p>
+                <p></p>
+                <p></p>
+            <h4>Announcements:</h4>
+                <p>Put some annoucnements here.</p>
+
+        </div>
     </body>
+    </div>
 </html>

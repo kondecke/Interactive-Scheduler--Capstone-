@@ -13,7 +13,6 @@ class CreateUserForm(forms.Form):
     addressLn1 = forms.CharField(max_length=40, label="Address Line 1")
     addressLn2 = forms.CharField(max_length=40, label="Address Line 2")
     city = forms.CharField(max_length=40, label="City")
-    state = forms.Select(id="state")
     zipCode = forms.CharField(max_length=11, label="Zip Code") 
 
 class CreateEventForm(forms.Form):
