@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from src import dbConnection
+from rest_framework import status 
+from rest_framework.response import Response
 from . import forms
-
+from rest_framework.decorators import api_view
 # Create your views
 
 def index(request): 
@@ -47,3 +49,8 @@ def createGroup(request):
     if request.method == "POST":
         context = {'form':forms.createGroup}
         return render(request, 'createGroup.html', context)
+    
+@api_view(['GET'])
+def apiView(request): 
+    if request.method == "GET": 
+        return Response("{'test':'test'}", status=status.HTTP_200_OK)

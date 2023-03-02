@@ -28,5 +28,6 @@ urlpatterns = [
     path('calendar/', views.calendar), 
     path('groups/', views.groups), 
     path('settings/', views.settings),
-    path('faq/', views.faq)
+    path('faq/', views.faq),
+    path('api/test', views.apiView)
 ]
