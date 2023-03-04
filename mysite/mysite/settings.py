@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from sshtunnel import SSHTunnelForwarder
 from pathlib import Path
 from src import config
 
@@ -73,12 +73,29 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+ssh_tunnel = SSHTunnelForwarder(
+    (config.SSH_HOST),
+    ssh_username=config.SSH_USER,
+    ssh_password=config.SSH_PWD,
+    remote_bind_address=(config.DB_HOST_NAME, 3306),
+)
+ssh_tunnel.start()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    'pythonAnywhere': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '127.0.0.1',
+        'PORT': ssh_tunnel.local_bind_port,
+        'NAME': config.DB_NAME,
+        'USER': config.DB_USER,
+        'PASSWORD': config.DB_PWD,
+    },
+
+
 }
 
 

@@ -1,6 +1,6 @@
 import mysql.connector
 import sshtunnel
-from . import config
+import config
 class dbConnection():
     def __init__(self): 
         self.sshHost = config.SSH_HOST
@@ -19,11 +19,12 @@ class dbConnection():
             ssh_username=self.sshUser, ssh_password=self.sshPwd, 
             remote_bind_address=(self.dbHost, 3306)
             ) as tunnel: 
-                cnxn = mysql.connector.connect(user=self.dbUser, password=self.dbPwd, host=self.dbHost, port=tunnel.local_bind_port, db=self.dbName,)
+                cnxn = mysql.connector.connect(user=self.dbUser, password=self.dbPwd, host='127.0.0.1', port=tunnel.local_bind_port, db=self.dbName,)
                 return cnxn
     def printDebug(self):
          print(self.sshUser)  
 db = dbConnection()
+db.connect()
 db.printDebug()
 
             
