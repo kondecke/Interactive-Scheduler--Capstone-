@@ -1,9 +1,13 @@
 from django.shortcuts import render
-from src import dbConnection
 from rest_framework import status 
 from rest_framework.response import Response
 from . import forms
 from rest_framework.decorators import api_view
+from . import serializers
+import io
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+import json
 # Create your views
 
 def index(request): 
@@ -18,14 +22,6 @@ def home(request):
 def calendar(request): 
     return render(request, 'calendar.html')
 
-def login(request): 
-    if request.method == "GET": 
-        context = {'form': forms.LoginForm}
-        return render(request, 'login.html', context)
-    if request.method == "POST": 
-        # validate login and redirect to new page 
-        context = {'form':forms.LoginForm}
-        return render(request, 'login.html', context)
 
 def settings(request): 
     return render(request, 'settings.html')
@@ -50,7 +46,18 @@ def createGroup(request):
         context = {'form':forms.createGroup}
         return render(request, 'createGroup.html', context)
     
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def apiView(request): 
     if request.method == "GET": 
+        params = (request.GET["id"])
         return Response("{'test':'test'}", status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def login(request): 
+    if request.method == "POST": 
+        data = request.POST
+        serializer = serializers.loginSerializer(data=data)
+        if serializer.is_valid(): 
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
