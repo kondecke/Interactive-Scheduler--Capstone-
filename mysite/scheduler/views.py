@@ -65,8 +65,15 @@ def login(request):
 
 @api_view(['GET', 'POST'])
 def events(request):
+
     if request.method == "GET": 
-        pass
+        data = request.GET
+        if len(data == 0): 
+            #default case with no params
+            events = models.Event.objects.all()
+            serializer = serializers.eventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
     elif request.method == "POST": 
         data = request.POST
         serializer = serializers.eventSerializer(data=data)
