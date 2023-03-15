@@ -30,5 +30,6 @@ urlpatterns = [
     path('settings/', views.settings),
     path('faq/', views.faq),
     path('api/test', views.apiView), 
-    path('api/login', views.login)
+    path('api/login', views.login),
+    path('api/events', views.events)
 ]

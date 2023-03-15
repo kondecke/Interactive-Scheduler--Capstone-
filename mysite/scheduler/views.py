@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from . import forms
 from rest_framework.decorators import api_view
 from . import serializers
+from . import models
 import io
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
@@ -59,5 +60,19 @@ def login(request):
         serializer = serializers.loginSerializer(data=data)
         if serializer.is_valid(): 
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else: 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST'])
+def events(request):
+    if request.method == "GET": 
+        pass
+    elif request.method == "POST": 
+        data = request.POST
+        serializer = serializers.eventSerializer(data=data)
+        if serializer.is_valid(): 
+            newEvent = models.Event(time=serializer.data['time'], description=serializer.data['description'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
+            newEvent.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)   
         else: 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
