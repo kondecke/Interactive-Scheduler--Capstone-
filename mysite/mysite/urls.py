@@ -31,5 +31,6 @@ urlpatterns = [
     path('faq/', views.faq),
     path('api/test', views.apiView), 
     path('api/login', views.login),
-    path('api/events', views.events)
+    path('api/events', views.events),
+    path('api/notifications', views.notifications)
 ]

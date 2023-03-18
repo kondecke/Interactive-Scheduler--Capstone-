@@ -10,3 +10,8 @@ class loginSerializer(serializers.ModelSerializer):
         model = models.Logins
         fields = ['studentid', 'pwd']
 
+class notificationsSerializer(serializers.ModelSerializer):
+    
+    class Meta: 
+        model = models.Notifications
+        fields = ['notificationID', 'userID', 'notificationMsg']
