@@ -72,7 +72,7 @@ def events(request):
     #retrieve events list with various query params 
     if request.method == "GET": 
         data = request.GET
-        if len(data == 0): 
+        if len(data) == 0: 
             #default case with no params
             events = models.Event.objects.all()
             serializer = serializers.eventSerializer(events, many=True)
