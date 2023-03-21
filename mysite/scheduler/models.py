@@ -42,6 +42,7 @@ class Groups(models.Model):
 
 class Logins(models.Model):
     studentid = models.OneToOneField('User', models.DO_NOTHING, db_column='studentID', primary_key=True)  # Field name made lowercase.
+    userName = models.CharField(max_length=64, blank=False, null=False)
     pwd = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:

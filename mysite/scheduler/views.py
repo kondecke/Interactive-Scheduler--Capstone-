@@ -17,14 +17,16 @@ def apiView(request):
         params = (request.GET["id"])
         return Response("{'test':'test'}", status=status.HTTP_200_OK)
 
-@api_view(['Get', 'POST'])
+@api_view(['GET', 'PUT'])
 def login(request): 
     if request.method == "GET":
         #retrieve login info for a given student need to join logins model with students table to return login 
         pass
     if request.method == "POST":
         #create login for a student linking it to the email provided in the student info table  
-        data = request.POST
+        json = request.body
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
         serializer = serializers.loginSerializer(data=data)
         if serializer.is_valid(): 
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -53,7 +55,7 @@ def events(request):
             newEvent.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)   
         else: 
-            return Response(serializer.errors, status=status.HTTP_101_SWITCHING_PROTOCOLS)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 @api_view(['GET', 'POST'])
 def notifications(request): 
