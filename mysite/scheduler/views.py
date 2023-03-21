@@ -65,7 +65,7 @@ def login(request):
         else: 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'POST'])
 def events(request):
     #retrieve events list with various query params 
     if request.method == "GET": 
@@ -76,7 +76,7 @@ def events(request):
             serializer = serializers.eventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    elif request.method == "PUT": 
+    elif request.method == "POST": 
         # create a new event 
         json = request.body
         stream = io.BytesIO(json)
