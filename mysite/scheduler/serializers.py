@@ -15,3 +15,14 @@ class notificationsSerializer(serializers.ModelSerializer):
     class Meta: 
         model = models.Notifications
         fields = ['notificationID', 'userID', 'notificationMsg']
+
+class groupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Groups
+        fields = ['groupid', 'name', 'description']
+
+class followersSerializer(serializers.ModelSerializer):
+    class meta:
+        model = models.Followers
+        fields = ['userid', 'followingid']
+
