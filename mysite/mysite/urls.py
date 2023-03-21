@@ -19,18 +19,9 @@ from scheduler import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
-    path('login/', views.login), 
-    path('create/', views.createAccount), 
-    path('home/', views.home),
-    path('notifications/', views.notifications), 
-    path('messages/', views.messages), 
-    path('calendar/', views.calendar), 
-    path('groups/', views.groups), 
-    path('settings/', views.settings),
-    path('faq/', views.faq),
     path('api/test', views.apiView), 
     path('api/login', views.login),
     path('api/events', views.events),
-    path('api/notifications', views.notifications)
+    path('api/notifications', views.notifications),
+    path('api/groups', views.groups)
 ]
