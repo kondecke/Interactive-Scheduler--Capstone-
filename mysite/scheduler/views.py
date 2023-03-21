@@ -110,3 +110,16 @@ def notifications(request):
 @api_view(['GET', 'POST'])
 def students(request): 
     pass
+
+
+@api_view(['GET', 'POST'])
+def groups(request):
+    if request.method == "GET": 
+        data = request.GET
+        if len(data) == 0: 
+            groups = models.Groups.objects.all()
+            serializer = serializers.groupSerializer(groups, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
