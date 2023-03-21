@@ -11,7 +11,7 @@ from django.db import models
 class Event(models.Model):
     eventid = models.AutoField(db_column='EventID', primary_key=True)  # Field name made lowercase.
     time = models.DateTimeField(blank=True, null=True)
-    description = models.CharField(max_length=255, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=False)
     alert = models.IntegerField(blank=True, null=True)
     accesslevel = models.IntegerField(db_column='accessLevel', blank=True, null=True)  # Field name made lowercase.
 

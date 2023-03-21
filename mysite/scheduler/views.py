@@ -30,8 +30,6 @@ def settings(request):
 def groups(request): 
     return render(request, 'groups.html')
 
-def notifications(request):
-    return render(request, 'notifications.html')
 
 def messages(request): 
     return render(request, 'messages.html')
@@ -80,7 +78,9 @@ def events(request):
     
     elif request.method == "POST": 
         # create a new event 
-        data = request.POST
+        json = request.body
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
         serializer = serializers.eventSerializer(data=data)
         if serializer.is_valid(): 
             newEvent = models.Event(time=serializer.data['time'], description=serializer.data['description'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
