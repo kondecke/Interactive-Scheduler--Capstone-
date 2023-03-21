@@ -3,3 +3,4 @@ djangorestframework
 sshtunnel
 mysql-connector-python
 mysqlclient
+django-cors-headers
