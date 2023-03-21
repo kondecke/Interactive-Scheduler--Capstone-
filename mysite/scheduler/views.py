@@ -53,7 +53,7 @@ def events(request):
             newEvent.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)   
         else: 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_101_SWITCHING_PROTOCOLS)
         
 @api_view(['GET', 'POST'])
 def notifications(request): 
