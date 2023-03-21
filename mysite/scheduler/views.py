@@ -20,8 +20,8 @@ def apiView(request):
 @api_view(['GET', 'POST'])
 def login(request): 
     if request.method == "GET":
-        #retrieve login info for a given student need to join logins model with students table to return login 
         pass
+    
     if request.method == "POST":
         #create login for a student linking it to the email provided in the student info table  
         json = request.body
