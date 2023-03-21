@@ -17,7 +17,7 @@ def apiView(request):
         params = (request.GET["id"])
         return Response("{'test':'test'}", status=status.HTTP_200_OK)
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'POST'])
 def login(request): 
     if request.method == "GET":
         #retrieve login info for a given student need to join logins model with students table to return login 
