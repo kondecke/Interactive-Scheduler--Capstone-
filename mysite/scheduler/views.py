@@ -46,8 +46,8 @@ def events(request):
         else: 
             # assemble query parameters into Q object and query db for params
             q = Q()
-            if 'id' in request.GET:
-                q &= Q(id=request.GET['id'])
+            if 'eventid' in request.GET:
+                q &= Q(eventid=request.GET['eventid'])
             if 'time' in request.GET: 
                 q &= Q(time=request.GET['time'])
             if 'accesslevel' in request.GET: 
