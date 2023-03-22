@@ -8,6 +8,7 @@ from . import models
 import io
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
+from django.db.models import Q
 import json
 # Create your views
     
@@ -41,7 +42,21 @@ def events(request):
         if len(data) == 0: 
             #default case with no params
             events = models.Event.objects.all()
-            serializer = serializers.eventSerializer(events, many=True)
+
+        else: 
+            # assemble query parameters into Q object and query db for params
+            q = Q()
+            if 'id' in request.GET:
+                q &= Q(id=request.GET['id'])
+            if 'time' in request.GET: 
+                q &= Q(time=request.GET['time'])
+            if 'accesslevel' in request.GET: 
+                q &= Q(accesslevel=request.GET['accesslevel'])
+            if 'alert' in request.GET: 
+                q &= Q(alert=request.GET['alert'])
+            events = models.Event.objects.filter(q)
+        
+        serializer = serializers.eventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == "PUT": 
