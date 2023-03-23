@@ -36,36 +36,36 @@ def login(request):
 
 @api_view(['GET', 'PUT'])
 def events(request):
-    #retrieve events list with various query params 
+    #retrieve events list with filter options eventid, time, timegt (>), timelt(>), accesslevel, alert, and studentid
     if request.method == "GET": 
-        data = request.GET
-        if len(data) == 0: 
-            #default case with no params
-            events = models.Event.objects.all()
+        # assemble query parameters into Q object and query db for params
+        q = Q()
 
-        else: 
-            # assemble query parameters into Q object and query db for params
-            q = Q()
+        if 'eventid' in request.GET:
+            q &= Q(eventid=request.GET['eventid'])
+        if 'time' in request.GET: 
+            q &= Q(time=request.GET['time'])
+        if 'timegt' in request.GET: 
+            q &= Q(time__gt=request.GET['timegt'])
+        if 'timelt' in request.GET: 
+            q &= Q(time__lt=request.GET['timelt'])
+        if 'accesslevel' in request.GET: 
+            q &= Q(accesslevel=request.GET['accesslevel'])
+        if 'alert' in request.GET: 
+            q &= Q(alert=request.GET['alert'])
 
-            if 'eventid' in request.GET:
-                q &= Q(eventid=request.GET['eventid'])
-            if 'time' in request.GET: 
-                q &= Q(time=request.GET['time'])
-            if 'timegt' in request.GET: 
-                q &= Q(time__gt=request.GET['timegt'])
-            if 'timelt' in request.GET: 
-                q &= Q(time__lt=request.GET['timelt'])
-            if 'accesslevel' in request.GET: 
-                q &= Q(accesslevel=request.GET['accesslevel'])
-            if 'alert' in request.GET: 
-                q &= Q(alert=request.GET['alert'])
-            events = models.Event.objects.filter(q)
-            if 'studentid' in request.GET: 
-                studentEvents = models.Studentevents.objects.filter(studentid=request.GET['studentid'])
-                events = events.filter(studentevents__in=studentEvents)
-            if 'groupid' in request.GET: 
-                groupEvents = models.Studentevents.objects.filter(groupid=request.GET['groupid'])
-                events = events.filter(studentevents__in=groupEvents)
+        events = models.Event.objects.filter(q)
+
+        if 'studentid' in request.GET: 
+
+            studentEvents = models.Studentevents.objects.filter(studentid=request.GET['studentid'])
+            events = events.filter(studentevents__in=studentEvents)
+
+        if 'groupid' in request.GET: 
+
+            groupEvents = models.Studentevents.objects.filter(groupid=request.GET['groupid'])
+            events = events.filter(studentevents__in=groupEvents)
+
         serializer = serializers.eventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -75,11 +75,15 @@ def events(request):
         stream = io.BytesIO(json)
         data = JSONParser().parse(stream)
         serializer = serializers.eventSerializer(data=data)
+
         if serializer.is_valid(): 
+
             newEvent = models.Event(time=serializer.data['time'], description=serializer.data['description'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
             newEvent.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)   
+            return Response(serializer.data, status=status.HTTP_201_CREATED)  
+         
         else: 
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 @api_view(['GET', 'POST'])
@@ -107,12 +111,65 @@ def students(request):
 
 @api_view(['GET', 'POST'])
 def groups(request):
+    # get groups no params for *, filterable by: groupid, name, studentid
     if request.method == "GET": 
-        data = request.GET
-        if len(data) == 0: 
-            groups = models.Groups.objects.all()
-            serializer = serializers.groupSerializer(groups, many=True)
+        q = Q()
+
+        if 'groupid' in request.GET: 
+            q &= Q(groupid=request.GET['groupid'])
+        if 'name' in request.GET: 
+            q &= Q(name=request.GET['name'])
+
+        groups = models.Groups.objects.filter(q)
+        if 'studentid' in request.GET: 
+
+            studGroups = models.Studentsingroup.objects.filter(studentid=request.GET['studentid'])
+            groups = groups.filter(studGroups__in=studGroups)
+        
+        serializer = serializers.groupSerializer(groups, many=True)
+        
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET', 'PUT'])
+def followers(request): 
+    if request.method == "GET": 
+        q = Q()
+        if 'userid' in request.GET: 
+            q &= Q(userid=request.GET['userid'])
+        if 'followingid' in request.GET:
+            q &= Q(followingid=request.GET['followingid'])
+
+        if q == Q(): 
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        followers = models.Followers.objects.filter(q)
+        serializer = serializers.followersSerializer(followers, many=True)
+
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT']) 
+def messages(request): 
+    if request.method == 'GET': 
+        q = Q()
+        if 'to' in request.GET: 
+            q &= Q(touser=request.GET['to'])
+        if 'from' in request.GET: 
+            q &= Q(fromuser=request.GET['from'])
+        if 'toGroup' in request.GET: 
+            q &= Q(fromuser=request.GET['toGroup'])
+        
+        if q == Q(): 
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        messages = models.Messages.objects.filter(q)
+        serializer = serializers.messagesSerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT'])
+def posts(request): 
+    pass
+        

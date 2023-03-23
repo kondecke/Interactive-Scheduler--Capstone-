@@ -23,5 +23,7 @@ urlpatterns = [
     path('api/login', views.login),
     path('api/events', views.events),
     path('api/notifications', views.notifications),
-    path('api/groups', views.groups)
+    path('api/groups', views.groups), 
+    path('api/followers', views.followers), 
+    path('api/messages', views.messages)
 ]
