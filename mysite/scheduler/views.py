@@ -46,16 +46,26 @@ def events(request):
         else: 
             # assemble query parameters into Q object and query db for params
             q = Q()
+
             if 'eventid' in request.GET:
                 q &= Q(eventid=request.GET['eventid'])
             if 'time' in request.GET: 
                 q &= Q(time=request.GET['time'])
+            if 'timegt' in request.GET: 
+                q &= Q(time__gt=request.GET['timegt'])
+            if 'timelt' in request.GET: 
+                q &= Q(time__lt=request.GET['timelt'])
             if 'accesslevel' in request.GET: 
                 q &= Q(accesslevel=request.GET['accesslevel'])
             if 'alert' in request.GET: 
                 q &= Q(alert=request.GET['alert'])
             events = models.Event.objects.filter(q)
-        
+            if 'studentid' in request.GET: 
+                studentEvents = models.Studentevents.objects.filter(studentid=request.GET['studentid'])
+                events = events.filter(studentevents__in=studentEvents)
+            if 'groupid' in request.GET: 
+                groupEvents = models.Studentevents.objects.filter(groupid=request.GET['groupid'])
+                events = events.filter(studentevents__in=groupEvents)
         serializer = serializers.eventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
