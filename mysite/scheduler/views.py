@@ -171,5 +171,30 @@ def messages(request):
 
 @api_view(['GET', 'PUT'])
 def posts(request): 
-    pass
+    if request.method == "GET": 
+        q = Q() 
+        if 'postid' in request.GET: 
+            q &= Q(postid=request.id['postid'])
+        if 'threadid' in request.GET: 
+            q &= Q(threadid = request.GET['threadid'])
+        if 'fromuser' in request.GET: 
+            q &= Q(fromuser=request.GET['fromuser'])
+        if 'threadtitle' in request.GET: 
+            q &= Q(threadtitle=request.GET['threadtitle'])
         
+        if q == Q(): 
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        posts = models.Posts.filter(q)
+        serializer = serializers.postsSerializer(posts, many = True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+    
+    elif request.method == 'PUT': 
+        json = request.body 
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
+        serializer = serializers.postsSerializer(data=data)
+        if serializer.is_valid(): 
+            newPost = models.Posts(postid=serializer.data['postid'], threadid=serializer.data['threadid'], fromuser=serializer.data['fromuser'], threadtitle=serializer.data['threadtitle'], threaddescription=serializer.data['threaddescription'], postcontent=serializer.data['postcontent'])
+            newPost.save() 
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
