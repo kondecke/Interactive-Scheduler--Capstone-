@@ -1,6 +1,5 @@
 import hashlib
-import json
-import os, string, random
+import os, string
 from cryptography.fernet import Fernet
 
 def to_bytes(s):
