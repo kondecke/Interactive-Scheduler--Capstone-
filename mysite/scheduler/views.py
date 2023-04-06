@@ -129,6 +129,7 @@ def groups(request):
         serializer = serializers.groupSerializer(groups, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
     elif request.method == 'PUT': 
         json = request.body 
         stream = io.BytesIO(json)
@@ -137,6 +138,7 @@ def groups(request):
         if serializer.is_valid(): 
             newGroup = models.Groups(name=serializer.data['name'], description=serializer.data['description'])
             newGroup.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
