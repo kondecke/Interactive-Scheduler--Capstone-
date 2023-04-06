@@ -118,7 +118,9 @@ def groups(request):
         if 'groupid' in request.GET: 
             q &= Q(groupid=request.GET['groupid'])
         if 'name' in request.GET: 
-            q &= Q(name=request.GET['name'])
+            q &= Q(name__contains=request.GET['name'])
+        if 'description' in request.GET: 
+            q &= Q(description__contains=request.GET['description'])
 
         groups = models.Groups.objects.filter(q)
         if 'studentid' in request.GET: 
