@@ -109,7 +109,7 @@ def students(request):
     pass
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT'])
 def groups(request):
     # get groups no params for *, filterable by: groupid, name, studentid
     if request.method == "GET": 
@@ -124,14 +124,21 @@ def groups(request):
         if 'studentid' in request.GET: 
 
             studGroups = models.Studentsingroup.objects.filter(studentid=request.GET['studentid'])
-            groups = groups.filter(studGroups__in=studGroups)
+            groups = groups.filter(studentsingroup__in=studGroups)
         
         serializer = serializers.groupSerializer(groups, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'PUT': 
+        json = request.body 
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
+        serializer = serializers.groupSerializer(data=data)
+        if serializer.is_valid(): 
+            newGroup = models.Groups(name=serializer.data['name'], description=serializer.data['description'])
+            newGroup.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT'])
 def followers(request): 
