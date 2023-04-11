@@ -9,7 +9,11 @@ import io
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from django.db.models import Q
+from src import hash
 import json
+import os
+import random
+import hashlib
 # Create your views
     
 @api_view(['GET', 'POST'])
@@ -21,19 +25,64 @@ def apiView(request):
 @api_view(['GET', 'POST'])
 def login(request): 
     if request.method == "GET":
-        pass
+        session_id = request.coookie.get("session_id", "-")
+        if os.path.isfile("../cookies/session_id" + "-"):
+            with open(session_id + "-session.json") as f:
+                data = json.load(f)
+                current_user = data['user']
+        if current_user != "-":
+            return Response("{'Error':'Sorry you have to signout first'}", status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
+
     
     if request.method == "POST":
-        #create login for a student linking it to the email provided in the student info table  
-        json = request.body
-        stream = io.BytesIO(json)
-        data = JSONParser().parse(stream)
-        serializer = serializers.loginSerializer(data=data)
-        if serializer.is_valid(): 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else: 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        user = request.forms.get('user', None)
+        if not user:
+            return "Please enter a user name."
+        password = request.forms.get('password', None)
+        if not password:
+            return "Please enter a password."
+
+        # set default response to '-' if login fails
+        session_id = str(random.randint(0,100000000000))
+        response = Response()
+        response.set_cookie("session",session_id, path='/')
+
+        #response.set_cookie("user", '-', path='/')
+        with open(session_id + "-session.json","w") as f:
+            data = {
+                "user":'-'
+                }
+            json.dump(data,f)
+
+        user = user.strip()
+
+        # sanitize user name so we don't inject malicious filenames
+        if not user.isalnum():
+            return Response("{'error':'Sorry, the user name must be letters and digits'}", status = status.HTTP_400_BAD_REQUEST)
+
+        # see if user exists
+        filename = f'data/{user}-profile.json'
+        if not os.path.isfile(filename):
+            return Response("{'error':'Sorry, no such user'}", status = status.HTTP_400_BAD_REQUEST)
+
+        # fetch password
+        with open(f'data/{user}-profile.json',"r") as f:
+            data = json.load(f)
+
+        # check password correctness
+        if data['password-hash'] != hash.hash_password(password + data['salt'], n=100000):
+            return Response("{'error':'Sorry, the user name and password do not match'}", status = status.HTTP_400_BAD_REQUEST)
+
+        # successful login
+        response.set_cookie("user", user, path='/')
+        with open(session_id + "-session.json","w") as f:
+            data = {
+                "user":user
+                }
+            return Response(json.dump(data, f), status=status.HTTP_200_OK)
+            
 @api_view(['GET', 'PUT'])
 def events(request):
     #retrieve events list with filter options eventid, time, timegt (>), timelt(>), accesslevel, alert, and studentid
