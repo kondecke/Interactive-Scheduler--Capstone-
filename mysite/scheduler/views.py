@@ -51,7 +51,35 @@ def login(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     if request.method == 'PUT': 
-        pass
+        json = request.body
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
+        email = data.get('email')
+        pwd = data.get('password')
+        firstName = data.get('firstName')
+        lastName = data.get('lastName')
+        address = data.get('address')
+        phoneNumber = data.get('phoneNumber')
+        userName = data.get('userName')
+        userData = dict()
+        userData['email'] = email
+        userData['firstName'] = firstName
+        userData['LastName'] = lastName
+        userData['address'] = address
+        userData['phoneNumber'] = phoneNumber
+        loginData = dict()
+        loginData['pwd'] = pwd
+        loginData['userName'] = userName
+        userSerializer = serializers.userSerializer(data=userData)
+        loginSerializer = serializers.loginSerializer(data=loginData)
+        if userSerializer.is_valid() and loginSerializer.is_valid(): 
+            newUser = models.User(email=userSerializer.data['email'], address=userSerializer.data['address'], phonenumber=userSerializer.data['phoneNumber'], firstname=userSerializer.data['firstName'], lastname=userSerializer.data['lastName'])
+            newLogin = models.Logins(userName=loginSerializer.data['userName'], pwd=loginSerializer.data['pwd'])
+            newUser.save()
+            newLogin.save()
+            return Response(userSerializer.data + loginSerializer.data, status=status.HTTP_200_OK)
+        else: 
+            return Response(userSerializer.errors + loginSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
 @api_view(['GET', 'PUT'])
 def events(request):
