@@ -22,17 +22,8 @@ def apiView(request):
         params = (request.GET["id"])
         return Response("{'test':'test'}", status=status.HTTP_200_OK)
 
-@api_view(['GET', 'POST'])
+@api_view(['PUT', 'POST'])
 def login(request): 
-    if request.method == "GET":
-        session_id = request.coookie.get("session_id", "-")
-        if os.path.isfile("../cookies/session_id" + "-"):
-            with open(session_id + "-session.json") as f:
-                data = json.load(f)
-                current_user = data['user']
-        if current_user != "-":
-            return Response("{'Error':'Sorry you have to signout first'}", status=status.HTTP_200_OK)
-        return Response(data, status=status.HTTP_200_OK)
 
     
     if request.method == "POST":
@@ -46,53 +37,15 @@ def login(request):
             q &= Q(userName = serializer.data["userName"])
             login = models.Logins.objects.filter(q)
             if serializer.data["pwd"] == login[0]["pwd"]:
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
             else:
                 return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
 
         else: 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
-
-        # set default response to '-' if login fails
-        session_id = str(random.randint(0,100000000000))
-        response = Response()
-        response.set_cookie("session",session_id, path='../cookies/')
-
-        #response.set_cookie("user", '-', path='/')
-        with open(session_id + "-session.json","w") as f:
-            data = {
-                "user":'-'
-                }
-            json.dump(data,f)
-
-        user = user.strip()
-
-        # sanitize user name so we don't inject malicious filenames
-        if not user.isalnum():
-            return Response("{'error':'Sorry, the user name must be letters and digits'}", status = status.HTTP_400_BAD_REQUEST)
-
-        # see if user exists
-        filename = f'data/{user}-profile.json'
-        if not os.path.isfile(filename):
-            return Response("{'error':'Sorry, no such user'}", status = status.HTTP_400_BAD_REQUEST)
-
-        # fetch password
-        with open(f'data/{user}-profile.json',"r") as f:
-            data = json.load(f)
-
-        # check password correctness
-        if data['password-hash'] != hash.hash_password(password + data['salt'], n=100000):
-            return Response("{'error':'Sorry, the user name and password do not match'}", status = status.HTTP_400_BAD_REQUEST)
-
-        # successful login
-        response.set_cookie("user", user, path='../cookies/')
-        with open("../cookies/" + session_id + "-session.json","w") as f:
-            data = {
-                "user":user
-                }
-            return Response(json.dump(data, f), status=status.HTTP_200_OK)
+    if request.method == 'PUT': 
+        pass
             
 @api_view(['GET', 'PUT'])
 def events(request):
