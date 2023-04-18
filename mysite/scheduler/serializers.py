@@ -8,7 +8,7 @@ class eventSerializer(serializers.ModelSerializer):
 class loginSerializer(serializers.ModelSerializer): 
     class Meta: 
         model = models.Logins
-        fields = ['studentid', 'userName', 'pwd']
+        fields = ['userName', 'pwd']
 
 class notificationsSerializer(serializers.ModelSerializer):
     
