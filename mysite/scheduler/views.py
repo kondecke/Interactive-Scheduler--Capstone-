@@ -36,18 +36,29 @@ def login(request):
 
     
     if request.method == "POST":
+        q = Q()
+        json = request.body
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
+        serializer = serializers.loginSerializer(data=data)
 
-        user = request.forms.get('user', None)
-        if not user:
-            return "Please enter a user name."
-        password = request.forms.get('password', None)
-        if not password:
-            return "Please enter a password."
+        if serializer.is_valid(): 
+            q &= Q(userName = serializer.data["userName"])
+            login = models.Logins.objects.filter(q)
+            if serializer.data["pwd"] == login[0]["pwd"]:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
+
+        else: 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
         # set default response to '-' if login fails
         session_id = str(random.randint(0,100000000000))
         response = Response()
-        response.set_cookie("session",session_id, path='/')
+        response.set_cookie("session",session_id, path='../cookies/')
 
         #response.set_cookie("user", '-', path='/')
         with open(session_id + "-session.json","w") as f:
@@ -76,8 +87,8 @@ def login(request):
             return Response("{'error':'Sorry, the user name and password do not match'}", status = status.HTTP_400_BAD_REQUEST)
 
         # successful login
-        response.set_cookie("user", user, path='/')
-        with open(session_id + "-session.json","w") as f:
+        response.set_cookie("user", user, path='../cookies/')
+        with open("../cookies/" + session_id + "-session.json","w") as f:
             data = {
                 "user":user
                 }

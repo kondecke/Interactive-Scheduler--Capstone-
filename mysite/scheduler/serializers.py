@@ -66,3 +66,11 @@ class userSerializer(serializers.ModelSerializer):
         model = models.User
         fields = ['studentid', 'email', 'address', 'phonenumber', 'firstname', 'lastname', 'standing']
 
+class userLoginSerializer(serializers.ModelSerializer):
+    user = userSerializer()
+    password = serializers.CharField(source='loginSerializer.pwd')
+    class Meta:
+        model = models.User
+        fields = ['user', 'password']
+
+
