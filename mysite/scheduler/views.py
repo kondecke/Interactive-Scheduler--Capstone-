@@ -24,7 +24,6 @@ def apiView(request):
 
 @api_view(['PUT', 'POST'])
 def login(request): 
-
     
     if request.method == "POST":
         q = Q()
@@ -37,6 +36,9 @@ def login(request):
             q &= Q(userName = serializer.data["userName"])
             login = models.Logins.objects.filter(q)
             if serializer.data["pwd"] == login[0]["pwd"]:
+                key = login[0]['pwd'][:-43]
+                salt = login[0]['pwd'][-44:-63]
+                passHash = login[0]['pwd'][:63]
                 return Response(serializer.data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
             else:
                 return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
