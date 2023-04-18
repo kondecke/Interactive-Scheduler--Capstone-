@@ -35,11 +35,14 @@ def login(request):
         if serializer.is_valid(): 
             q &= Q(userName = serializer.data["userName"])
             login = models.Logins.objects.filter(q)
-            if serializer.data["pwd"] == login[0].pwd:
-                key = login[0].pwd[:-43]
-                salt = login[0].pwd[-44:-63]
-                passHash = login[0].pwd[:63]
-                print(request.headers)
+            key = login[0].pwd[-44:]
+            salt = login[0].pwd[-44:-64]
+            passHash = login[0].pwd[:64]
+            print(key)
+            print(request.headers)
+            compHash = hash.decrypt("5a2f4199d67f20dc7789c98eb4a36f42df648f18be80f13e8c2d2271cbdd3f62","xBiyv8PmveSgICI03mYWjhqf9EJrFXKEV1I4i0MkBwQ=")
+            print(compHash)
+            if serializer.data["pwd"] == compHash:
                 return Response(serializer.data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
             else:
                 return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
