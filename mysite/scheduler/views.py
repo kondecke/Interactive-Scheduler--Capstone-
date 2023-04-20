@@ -56,30 +56,34 @@ def login(request):
         data = JSONParser().parse(stream)
         email = data.get('email')
         pwd = data.get('password')
-        firstName = data.get('firstName')
-        lastName = data.get('lastName')
+        firstName = data.get('firstname')
+        lastName = data.get('lastname')
         address = data.get('address')
-        phoneNumber = data.get('phoneNumber')
+        phoneNumber = data.get('phonenumber')
         userName = data.get('userName')
         userData = dict()
         userData['email'] = email
-        userData['firstName'] = firstName
-        userData['LastName'] = lastName
+        userData['firstname'] = firstName
+        userData['lastname'] = lastName
         userData['address'] = address
-        userData['phoneNumber'] = phoneNumber
+        userData['phonenumber'] = phoneNumber
+        print(userData)
         loginData = dict()
         loginData['pwd'] = pwd
         loginData['userName'] = userName
+        print(loginData)
         userSerializer = serializers.userSerializer(data=userData)
         loginSerializer = serializers.loginSerializer(data=loginData)
         if userSerializer.is_valid() and loginSerializer.is_valid(): 
-            newUser = models.User(email=userSerializer.data['email'], address=userSerializer.data['address'], phonenumber=userSerializer.data['phoneNumber'], firstname=userSerializer.data['firstName'], lastname=userSerializer.data['lastName'])
+            newUser = models.User(email=userSerializer.data['email'], address=userSerializer.data['address'], phonenumber=userSerializer.data['phonenumber'], firstname=userSerializer.data['firstname'], lastname=userSerializer.data['lastname'])
             newLogin = models.Logins(userName=loginSerializer.data['userName'], pwd=loginSerializer.data['pwd'])
             newUser.save()
             newLogin.save()
-            return Response(userSerializer.data + loginSerializer.data, status=status.HTTP_200_OK)
+            return Response([userSerializer.data, loginSerializer.data], status=status.HTTP_200_OK)
         else: 
-            return Response(userSerializer.errors + loginSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            print(userSerializer.errors)
+            print(loginSerializer.errors)
+            return Response([userSerializer.errors, loginSerializer.errors], status=status.HTTP_400_BAD_REQUEST)
             
 @api_view(['GET', 'PUT'])
 def events(request):
