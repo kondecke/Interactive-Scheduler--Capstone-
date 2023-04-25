@@ -4,7 +4,7 @@ from . import models
 class eventSerializer(serializers.ModelSerializer): 
     class Meta: 
         model = models.Event 
-        fields = ['eventid', 'startTime', 'endTime', 'description', 'alert', 'accesslevel']
+        fields = ['eventid', 'start', 'end', 'description', 'alert', 'accesslevel']
 
 class loginSerializer(serializers.ModelSerializer): 
     class Meta: 

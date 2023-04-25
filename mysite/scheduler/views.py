@@ -96,17 +96,17 @@ def events(request):
         if 'eventid' in request.GET:
             q &= Q(eventid=request.GET['eventid'])
         if 'starttime' in request.GET: 
-            q &= Q(startTime=request.GET['starttime'])
+            q &= Q(start=request.GET['starttime'])
         if 'starttimegt' in request.GET: 
-            q &= Q(startTime__gt=request.GET['starttimegt'])
+            q &= Q(start__gt=request.GET['starttimegt'])
         if 'starttimelt' in request.GET: 
-            q &= Q(startTime__lt=request.GET['starttimelt'])
+            q &= Q(start__lt=request.GET['starttimelt'])
         if 'endtime' in request.GET: 
-            q &= Q(endTime=request.GET['endtime'])
+            q &= Q(end=request.GET['endtime'])
         if 'endtimegt' in request.GET: 
-            q &= Q(endTime__gt=request.GET['endtimegt'])
+            q &= Q(end__gt=request.GET['endtimegt'])
         if 'endtimelt' in request.GET: 
-            q &= Q(endtime__lt=request.GET['endtimelt'])
+            q &= Q(end__lt=request.GET['endtimelt'])
         if 'accesslevel' in request.GET: 
             q &= Q(accesslevel=request.GET['accesslevel'])
         if 'alert' in request.GET: 
@@ -225,6 +225,7 @@ def followers(request):
 @api_view(['GET', 'PUT']) 
 def messages(request): 
     if request.method == 'GET': 
+        # get messages filterable by parameters 
         q = Q()
         if 'to' in request.GET: 
             q &= Q(touser=request.GET['to'])
@@ -239,6 +240,10 @@ def messages(request):
         messages = models.Messages.objects.filter(q)
         serializer = serializers.messagesSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'PUT':
+        pass 
+
+
 
 
 @api_view(['GET', 'PUT'])
