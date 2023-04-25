@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from . import models
+# necessary serializer classes from django REST framework to serialize and deserialize data in json format for api
 class eventSerializer(serializers.ModelSerializer): 
     class Meta: 
         model = models.Event 
