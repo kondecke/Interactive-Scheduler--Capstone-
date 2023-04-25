@@ -18,6 +18,7 @@ import hashlib
     
 @api_view(['GET', 'POST'])
 def apiView(request): 
+    # test view deleteable later 
     if request.method == "GET": 
         params = (request.GET["id"])
         return Response("{'test':'test'}", status=status.HTTP_200_OK)
@@ -94,12 +95,18 @@ def events(request):
 
         if 'eventid' in request.GET:
             q &= Q(eventid=request.GET['eventid'])
-        if 'time' in request.GET: 
-            q &= Q(time=request.GET['time'])
-        if 'timegt' in request.GET: 
-            q &= Q(time__gt=request.GET['timegt'])
-        if 'timelt' in request.GET: 
-            q &= Q(time__lt=request.GET['timelt'])
+        if 'starttime' in request.GET: 
+            q &= Q(startTime=request.GET['starttime'])
+        if 'starttimegt' in request.GET: 
+            q &= Q(startTime__gt=request.GET['starttimegt'])
+        if 'starttimelt' in request.GET: 
+            q &= Q(startTime__lt=request.GET['starttimelt'])
+        if 'endtime' in request.GET: 
+            q &= Q(endTime=request.GET['endtime'])
+        if 'endtimegt' in request.GET: 
+            q &= Q(endTime__gt=request.GET['endtimegt'])
+        if 'endtimelt' in request.GET: 
+            q &= Q(endtime__lt=request.GET['endtimelt'])
         if 'accesslevel' in request.GET: 
             q &= Q(accesslevel=request.GET['accesslevel'])
         if 'alert' in request.GET: 

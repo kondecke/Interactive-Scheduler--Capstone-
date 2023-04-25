@@ -3,7 +3,7 @@ from . import models
 class eventSerializer(serializers.ModelSerializer): 
     class Meta: 
         model = models.Event 
-        fields = ['eventid', 'time', 'description', 'alert', 'accesslevel']
+        fields = ['eventid', 'startTime', 'endTime', 'description', 'alert', 'accesslevel']
 
 class loginSerializer(serializers.ModelSerializer): 
     class Meta: 
