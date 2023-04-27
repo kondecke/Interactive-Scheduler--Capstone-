@@ -19,6 +19,7 @@ from cryptography.fernet import Fernet
     
 @api_view(['GET', 'POST'])
 def apiView(request): 
+    # test view deleteable later 
     if request.method == "GET": 
         params = (request.GET["id"])
         return Response("{'test':'test'}", status=status.HTTP_200_OK)
@@ -93,12 +94,18 @@ def events(request):
 
         if 'eventid' in request.GET:
             q &= Q(eventid=request.GET['eventid'])
-        if 'time' in request.GET: 
-            q &= Q(time=request.GET['time'])
-        if 'timegt' in request.GET: 
-            q &= Q(time__gt=request.GET['timegt'])
-        if 'timelt' in request.GET: 
-            q &= Q(time__lt=request.GET['timelt'])
+        if 'starttime' in request.GET: 
+            q &= Q(start=request.GET['starttime'])
+        if 'starttimegt' in request.GET: 
+            q &= Q(start__gt=request.GET['starttimegt'])
+        if 'starttimelt' in request.GET: 
+            q &= Q(start__lt=request.GET['starttimelt'])
+        if 'endtime' in request.GET: 
+            q &= Q(end=request.GET['endtime'])
+        if 'endtimegt' in request.GET: 
+            q &= Q(end__gt=request.GET['endtimegt'])
+        if 'endtimelt' in request.GET: 
+            q &= Q(end__lt=request.GET['endtimelt'])
         if 'accesslevel' in request.GET: 
             q &= Q(accesslevel=request.GET['accesslevel'])
         if 'alert' in request.GET: 
@@ -107,12 +114,12 @@ def events(request):
         events = models.Event.objects.filter(q)
 
         if 'studentid' in request.GET: 
-
+            # inner join student Events to make queryable by student
             studentEvents = models.Studentevents.objects.filter(studentid=request.GET['studentid'])
             events = events.filter(studentevents__in=studentEvents)
 
         if 'groupid' in request.GET: 
-
+            # inner join group events to make queryable by groups 
             groupEvents = models.Studentevents.objects.filter(groupid=request.GET['groupid'])
             events = events.filter(studentevents__in=groupEvents)
 
@@ -127,7 +134,7 @@ def events(request):
         serializer = serializers.eventSerializer(data=data)
 
         if serializer.is_valid(): 
-
+            # sanitize data and save if all nonnull fields provided 
             newEvent = models.Event(time=serializer.data['time'], description=serializer.data['description'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
             newEvent.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)  
@@ -183,6 +190,7 @@ def groups(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'PUT': 
+        # create a new group 
         json = request.body 
         stream = io.BytesIO(json)
         data = JSONParser().parse(stream)
@@ -196,6 +204,7 @@ def groups(request):
 
 @api_view(['GET', 'PUT'])
 def followers(request): 
+    # get followers for a user 
     if request.method == "GET": 
         q = Q()
         if 'userid' in request.GET: 
@@ -215,6 +224,7 @@ def followers(request):
 @api_view(['GET', 'PUT']) 
 def messages(request): 
     if request.method == 'GET': 
+        # get messages filterable by parameters 
         q = Q()
         if 'to' in request.GET: 
             q &= Q(touser=request.GET['to'])
@@ -229,6 +239,11 @@ def messages(request):
         messages = models.Messages.objects.filter(q)
         serializer = serializers.messagesSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'PUT':
+        pass 
+
+
+
 
 @api_view(['GET', 'PUT'])
 def posts(request): 
