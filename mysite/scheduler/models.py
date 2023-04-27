@@ -6,7 +6,7 @@ class Event(models.Model):
     eventid = models.AutoField(db_column='EventID', primary_key=True)  # Field name made lowercase.
     start = models.DateTimeField(blank=True, null=True)
     end = models.DateTimeField(blank=True, null=True)
-    description = models.CharField(max_length=255, blank=True, null=False)
+    title = models.CharField(max_length=255, blank=True, null=False)
     alert = models.IntegerField(blank=True, null=True)
     accesslevel = models.IntegerField(db_column='accessLevel', blank=True, null=True)  # Field name made lowercase.
 

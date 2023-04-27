@@ -135,7 +135,7 @@ def events(request):
 
         if serializer.is_valid(): 
             # sanitize data and save if all nonnull fields provided 
-            newEvent = models.Event(time=serializer.data['time'], description=serializer.data['description'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
+            newEvent = models.Event(start=serializer.data['start'], end=serializer.data['end'], title=serializer.data['title'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
             newEvent.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)  
          
