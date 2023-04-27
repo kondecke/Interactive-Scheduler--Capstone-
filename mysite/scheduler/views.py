@@ -155,9 +155,7 @@ def events(request):
             last = models.Event.objects.order_by('-eventid').first()
             id = last.eventid
             joinData['eventid'] = id
-            print(id)
             joinSerializer = serializers.studentEventsSerializer(data=joinData)
-            print(joinData)
             if joinSerializer.is_valid(): 
                 joinSerializer.save()
                 return Response(joinSerializer.data, status=status.HTTP_201_CREATED)  
