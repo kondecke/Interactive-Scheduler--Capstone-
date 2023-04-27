@@ -49,7 +49,7 @@ def login(request):
 
                 serializer2 = serializers.login2ElectricBoogaloo(data=login)
 
-                return Response(serializer2.initial_data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
+                return Response(serializer2.initial_data, headers={'authenticated':'True'}, status=status.HTTP_202_ACCEPTED)
             else:
                 return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
 
