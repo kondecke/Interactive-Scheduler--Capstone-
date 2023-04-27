@@ -131,14 +131,37 @@ def events(request):
         json = request.body
         stream = io.BytesIO(json)
         data = JSONParser().parse(stream)
-        serializer = serializers.eventSerializer(data=data)
+        q = Q()
+        joinData = {}
+        if 'groupid' in data: 
+            q &= Q(groupid=data['groupid'])
+            data.pop('groupid')
+            group = models.Groups.objects.filter(q).first()
+            if group is not None: 
+                joinData['groupid'] = group.groupid
+        if 'studentid' in data: 
+            q = Q(studentid=data['studentid'])
+            data.pop('studentid')
+            student = models.User.objects.filter(q).first()
+            if student is not None: 
+                joinData['studentid'] = student.studentid
+        
+        eventserializer = serializers.eventSerializer(data=data)
 
-        if serializer.is_valid(): 
+        if eventserializer.is_valid(): 
             # sanitize data and save if all nonnull fields provided 
-            newEvent = models.Event(start=serializer.data['start'], end=serializer.data['end'], title=serializer.data['title'], alert=serializer.data['alert'], accesslevel=serializer.data['accesslevel'])
+            newEvent = models.Event(start=eventserializer.data['start'], end=eventserializer.data['end'], title=eventserializer.data['title'], alert=eventserializer.data['alert'], accesslevel=eventserializer.data['accesslevel'])
             newEvent.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)  
-         
+            last = models.Event.objects.order_by('-eventid').first()
+            id = last.eventid
+            joinData['eventid'] = id
+            print(id)
+            joinSerializer = serializers.studentEventsSerializer(data=joinData)
+            print(joinData)
+            if joinSerializer.is_valid(): 
+                joinSerializer.save()
+                return Response(joinSerializer.data, status=status.HTTP_201_CREATED)  
+            return Response(joinSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else: 
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -226,12 +249,12 @@ def messages(request):
     if request.method == 'GET': 
         # get messages filterable by parameters 
         q = Q()
-        if 'to' in request.GET: 
-            q &= Q(touser=request.GET['to'])
-        if 'from' in request.GET: 
-            q &= Q(fromuser=request.GET['from'])
+        if 'touser' in request.GET: 
+            q &= Q(touser=request.GET['touser'])
+        if 'fromuser' in request.GET: 
+            q &= Q(fromuser=request.GET['fromuser'])
         if 'toGroup' in request.GET: 
-            q &= Q(fromuser=request.GET['toGroup'])
+            q &= Q(togroup=request.GET['toGroup'])
         if q == Q(): 
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
