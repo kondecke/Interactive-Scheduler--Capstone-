@@ -232,7 +232,6 @@ def messages(request):
             q &= Q(fromuser=request.GET['from'])
         if 'toGroup' in request.GET: 
             q &= Q(fromuser=request.GET['toGroup'])
-        
         if q == Q(): 
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
@@ -240,7 +239,47 @@ def messages(request):
         serializer = serializers.messagesSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        pass 
+        # create a new message to student given username
+        json = request.body
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
+        q = Q()
+
+        if 'email' in data:
+            q &= Q(email=data['email'])
+            data.pop('email')
+            student = models.User.objects.filter(q).first()
+            if student is not None:
+                data['touser'] = student.studentid
+            else:
+                return Response("Student with the provided email not found", status=status.HTTP_404_NOT_FOUND)
+
+        elif 'firstname' in data and 'lastname' in data:
+            q &= Q(firstname=data['firstname'])
+            data.pop('firstname')
+            q &= Q(lastname=data['lastname'])
+            data.pop('lastname')
+            student = models.User.objects.filter(q).first()
+            if student is not None:
+                data['touser'] = student.studentid
+            else:
+                return Response("Student with the provided first and last names not found", status=status.HTTP_404_NOT_FOUND)
+
+        elif 'username' in data:
+            q &= Q(username=data['username'])
+            login = models.Logins.objects.filter(q).first()
+            if login is not None:
+                data['touser'] = login.studentid
+            else:
+                return Response("Student with the provided username not found", status=status.HTTP_404_NOT_FOUND)
+
+        serializer = serializers.messagesSerializer(data=data)
+        if serializer.is_valid():
+            newMsg = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
