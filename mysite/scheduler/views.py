@@ -42,7 +42,14 @@ def login(request):
             pwd = data.get("pwd")
             pwd = hash.hash_password(pwd, n=100000)
             if pwd == passHash:
-                return Response(serializer.data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
+                login = list(login.values())  
+                login = login[0]  
+                login['studentid'] = login['studentid_id']
+                login.pop('studentid_id')
+
+                serializer2 = serializers.login2ElectricBoogaloo(data=login)
+
+                return Response(serializer2.initial_data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
             else:
                 return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
 

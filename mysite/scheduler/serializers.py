@@ -68,4 +68,8 @@ class userSerializer(serializers.ModelSerializer):
         fields = ['studentid', 'email', 'address', 'phonenumber', 'firstname', 'lastname', 'standing']
 
 
-
+class login2ElectricBoogaloo(serializers.ModelSerializer):
+    class Meta: 
+        model = models.Logins
+        fields = ['userName', 'pwd', 'studentid']
+    
