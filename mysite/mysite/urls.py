@@ -25,5 +25,6 @@ urlpatterns = [
     path('api/notifications', views.notifications),
     path('api/groups', views.groups), 
     path('api/followers', views.followers), 
-    path('api/messages', views.messages)
+    path('api/messages', views.messages),
+    path('api/addtogroup', views.addToGroup)
 ]

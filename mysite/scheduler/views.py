@@ -209,7 +209,7 @@ def groups(request):
         if 'studentid' in request.GET: 
 
             studGroups = models.Studentsingroup.objects.filter(studentid=request.GET['studentid'])
-            groups = groups.filter(studentsingroup__in=studGroups)
+            groups = groups.filter(studentsingroup__studentid=request.GET['studentid'])
         
         serializer = serializers.groupSerializer(groups, many=True)
         
@@ -339,3 +339,16 @@ def posts(request):
             newPost = models.Posts(postid=serializer.data['postid'], threadid=serializer.data['threadid'], fromuser=serializer.data['fromuser'], threadtitle=serializer.data['threadtitle'], threaddescription=serializer.data['threaddescription'], postcontent=serializer.data['postcontent'])
             newPost.save() 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['PUT'])
+def addToGroup(request):
+    if request.method == "PUT":
+        json = request.body 
+        stream = io.BytesIO(json)
+        data = JSONParser().parse(stream)
+        serializer = serializers.studentsinGroupSerializer(data=data)
+        if serializer.is_valid(): 
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else: 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

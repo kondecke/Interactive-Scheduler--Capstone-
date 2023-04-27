@@ -116,7 +116,7 @@ class Studentevents(models.Model):
 
 
 class Studentsingroup(models.Model):
-    studentid = models.OneToOneField('User', models.DO_NOTHING, db_column='studentID', primary_key=True)  # Field name made lowercase.
+    studentid = models.ForeignKey('User', models.DO_NOTHING, db_column='studentID')  # Field name made lowercase.
     groupid = models.ForeignKey(Groups, models.DO_NOTHING, db_column='GroupID')  # Field name made lowercase.
     role = models.ForeignKey(Roles, models.DO_NOTHING, db_column='role', blank=True, null=True)
 
