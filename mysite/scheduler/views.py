@@ -14,6 +14,7 @@ import json
 import os
 import random
 import hashlib
+from cryptography.fernet import Fernet
 # Create your views
     
 @api_view(['GET', 'POST'])
@@ -36,13 +37,10 @@ def login(request):
             q &= Q(userName = serializer.data["userName"])
             login = models.Logins.objects.filter(q)
             key = login[0].pwd[-44:]
-            salt = login[0].pwd[-44:-64]
             passHash = login[0].pwd[:64]
-            print(key)
-            print(request.headers)
-            compHash = hash.decrypt("5a2f4199d67f20dc7789c98eb4a36f42df648f18be80f13e8c2d2271cbdd3f62","xBiyv8PmveSgICI03mYWjhqf9EJrFXKEV1I4i0MkBwQ=")
-            print(compHash)
-            if serializer.data["pwd"] == compHash:
+            pwd = data.get("pwd")
+            pwd = hash.hash_password(pwd, n=100000)
+            if pwd == passHash:
                 return Response(serializer.data, headers={'authenticated':'True'}, status=status.HTTP_200_OK)
             else:
                 return Response("{'error':'Sorry that doesn't match.'}", status=status.HTTP_401_UNAUTHORIZED)
@@ -69,6 +67,7 @@ def login(request):
         userData['phonenumber'] = phoneNumber
         print(userData)
         loginData = dict()
+        pwd = hash.hash_password(pwd, n=100000) + hash.to_string(Fernet.generate_key())
         loginData['pwd'] = pwd
         loginData['userName'] = userName
         print(loginData)
