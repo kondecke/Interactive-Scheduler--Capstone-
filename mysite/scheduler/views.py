@@ -94,13 +94,13 @@ def login(request):
             
 @api_view(['GET', 'PUT'])
 def events(request):
-    #retrieve events list with filter options eventid, time, timegt (>), timelt(>), accesslevel, alert, and studentid
+        # retrieve events list with filter options eventid, time, timegt (>), timelt(>), accesslevel, alert, and studentid
     if request.method == "GET": 
         # assemble query parameters into Q object and query db for params
         q = Q()
 
         if 'eventid' in request.GET:
-            q &= Q(eventid=request.GET['eventid'])
+            q &= Q(studentevents__eventid=request.GET['eventid'])
         if 'starttime' in request.GET: 
             q &= Q(start=request.GET['starttime'])
         if 'starttimegt' in request.GET: 
@@ -114,21 +114,19 @@ def events(request):
         if 'endtimelt' in request.GET: 
             q &= Q(end__lt=request.GET['endtimelt'])
         if 'accesslevel' in request.GET: 
-            q &= Q(accesslevel=request.GET['accesslevel'])
+            q &= Q(accessLevel=request.GET['accesslevel'])
         if 'alert' in request.GET: 
             q &= Q(alert=request.GET['alert'])
 
         events = models.Event.objects.filter(q)
-
         if 'studentid' in request.GET: 
-            # inner join student Events to make queryable by student
+            # filter student events by studentid and join with events
             studentEvents = models.Studentevents.objects.filter(studentid=request.GET['studentid'])
-            events = events.filter(studentevents__in=studentEvents)
-
+            events = events.filter(studentevents__studentid=request.GET['studentid'])
         if 'groupid' in request.GET: 
-            # inner join group events to make queryable by groups 
+            # filter group events by groupid and join with events
             groupEvents = models.Studentevents.objects.filter(groupid=request.GET['groupid'])
-            events = events.filter(studentevents__in=groupEvents)
+            events = events.filter(studentevents__groupid=request.GET['groupid'])
 
         serializer = serializers.eventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
