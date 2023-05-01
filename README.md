@@ -1,5 +1,8 @@
 # Interactive-Scheduler--Capstone-
 
+/*
+This is the backend for the Flash Friends Application using Django REST framework to interact with React frontend application.
+The application allows users to create an account, login, create groups, events, and send messages.
 This file will describe how to download files and run the backend server and frontend server 
 which is located at https://github.com/kmill227/InteractiveSchedulerFrontend.
 
@@ -15,3 +18,5 @@ Backend Server
 9. Run command in terminal inside mysite directory "python manage.py startapp scheduler"
 10. Start django local server in mysite directory by running terminal command "python manage.py runserver"
 11. Backend server should be running. Make sure to run on port 8000.
+
+*/
