@@ -16,7 +16,8 @@ Backend Server
 7. Run commands to create site directory "django-admin startproject mysite"
 8. Change directory into mysite folder (should see manage.py if run command "ls")
 9. Run command in terminal inside mysite directory "python manage.py startapp scheduler"
-10. Start django local server in mysite directory by running terminal command "python manage.py runserver"
-11. Backend server should be running. Make sure to run on port 8000.
+10. Run command "pip install -r requirements.txt" for all dependencies.
+11. Start django local server in mysite directory by running terminal command "python manage.py runserver"
+12. Backend server should be running. Make sure to run on port 8000.
 
 */
